@@ -18,7 +18,8 @@ export default function AppList({ route, navigation }) {
             <Text style={styles.title}>Lista de Tarefas</Text>
             <ScrollView
                 style={styles.scrollContainer}
-                contentContainerStyle={styles.itemsContainer}>
+                contentContainerStyle={styles.itemsContainer}
+                >
                 {items.map(item => {
                     return <AppItem key={item.id} id={item.id} item={item.tarefa} navigation={navigation} />
                 })}
@@ -30,7 +31,7 @@ export default function AppList({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'blue',
+        backgroundColor: '#036FFC',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -46,11 +47,9 @@ const styles = StyleSheet.create({
         width: '90%'
     },
     itemsContainer: {
-        flex: 1,
         marginTop: 10,
         padding: 20,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        borderRadius: 10,
         alignItems: 'stretch',
         backgroundColor: '#fff'
     },

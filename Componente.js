@@ -28,7 +28,7 @@ export default function AppItem(props) {
     }
     async function handleEditPress() {
         const item = await Database.getItem(props.id);
-        props.navigation.navigate("AppForm", item);
+        props.navigation.navigate("AppForm", {item: item, edit: true});
     }
     return (
         <View style={styles.container}>
