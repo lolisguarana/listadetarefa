@@ -20,10 +20,12 @@
     "ios": {
       "supportsTablet": true
     },
+    
     "android": {
       "package": "com.app.listadetarefas",
-      "versionCode": 13
+      "versionCode": 19
     },
+    "permissions": [],
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -33,7 +35,18 @@
       }
     },
     "plugins": [
-      "react-native-health"
-    ]
+      "react-native-health",
+            [
+              "expo-build-properties",
+              {
+                "android": {
+                  "compileSdkVersion": 33,
+                  "targetSdkVersion": 34,
+                  "buildToolsVersion": "33.0.0"
+                }
+                
+              }
+            ]
+          ]
   }
 }

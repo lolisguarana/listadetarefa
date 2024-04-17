@@ -1,45 +1,37 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-async function saveItem(listItem, id){
-    listItem.id = id ? id : new Date().getTime()
-    const savedItems = await getItems();
-
-    if(id){
-        const index = await savedItems.findIndex(item => item.id === id);
-        savedItems[index] = listItem;
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, } from "firebase/auth";
+import { auth } from "./config";
+export const Logins =(email,senha)=>{
+    signInWithEmailAndPassword(auth,email,senha).then(()=>{
+        alert('Logado');
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+export const CadastrosLogin =(email,senha)=>{
+    createUserWithEmailAndPassword(auth,email,senha).then((userCredentials)=>{
+        const user = userCredentials.user;
+        uploadDataToFirestore(user);
+        alert('Inscrito');
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+export const Logout =()=>{
+    signOut(auth).then(()=>{
+        alert('Sair');
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+export const getLoggedInUserUid = () => {
+    const user = auth.currentUser;
+    if (user) {
+      // O usuário está autenticado, então podemos acessar o UID
+      const userUid = user.uid;
+      console.log('UID do usuário logado:', userUid);
+      return userUid;
+    } else {
+      console.log('Nenhum usuário autenticado.');
+      return null;
     }
-    else
-      savedItems.push(listItem);
-
-    return AsyncStorage.setItem('items', JSON.stringify(savedItems));
-}
-
-
-function getItems(){
-    return AsyncStorage.getItem('items')
-            .then(response => {
-                if(response)
-                    return Promise.resolve(JSON.parse(response));
-                else
-                    return Promise.resolve([]);
-            })
-}
-
-async function getItem(id){
-    const savedItems = await getItems();
-    return savedItems.find(item => item.id === id);
-} 
-
-async function deleteItem(id){
-    let savedItems = await getItems();
-    const index = await savedItems.findIndex(item => item.id === id);
-    savedItems.splice(index, 1);
-    return AsyncStorage.setItem('items', JSON.stringify(savedItems));
-}
-
-module.exports = {
-    saveItem,
-    getItems,
-    getItem,
-    deleteItem
-}
+  };

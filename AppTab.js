@@ -1,43 +1,28 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import AppList from './AppList';
 import AppForm from './AppForm';
+import AppEdit from './AppEdit';
 
-const { Navigator, Screen } = createBottomTabNavigator();
+
+const Stack = createStackNavigator();
 
 function AppTab() {
     return (
         <NavigationContainer>
-            <Navigator
+            <Stack.Navigator
                 screenOptions={{
-                    tabBarActiveTintColor: "#32264d",
-                    tabBarInactiveTintColor: "#c1bccc",
-                    tabBarActiveBackgroundColor: "#ebebf5",
-                    tabBarInactiveBackgroundColor: "#fafafc",
-                    tabBarLabelStyle: {
-                        fontSize: 13,
-                        position: 'absolute',
-                        top: 15,
-                        bottom: 0,
-                        left: 0,
-                        right: 0
-                    },
-                    tabBarIconStyle: { display: "none" }
+                    headerShown:false,
                 }}
             >
-                <Screen name="AppList" component={AppList}
-                    options={{
-                        tabBarLabel: "Tarefas"
-                    }}
+                <Stack.Screen name="Lista" component={AppList}
                 />
-                <Screen name="AppForm" component={AppForm}
-                    options={{
-                        tabBarLabel: "Adicionar"
-                    }}
-                />                
-            </Navigator>
+                <Stack.Screen name="Cadastro" component={AppForm}
+                />      
+                <Stack.Screen name='Editar' component={AppEdit}/>         
+            </Stack.Navigator>
         </NavigationContainer>
     );
 }

@@ -1,61 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import Database from './Database';
-import {addDoc,db,collection,auth} from './config';
-
-export default function AppForm({ route,navigation }) {
-  const [tarefa, setTarefa] = useState('');  
-  const [editMode, setEditMode] = useState(route?.params?.edit ?? false); 
-  let id = route?.params && route?.params?.edit ? route.params.id : undefined; 
-  useEffect(() => {
-    if (!id) return;
-    setTarefa(route.params.item);
-    setEditMode(route.params.edit);
-  }, [route])
-  function handleTarefaChange(tarefa) { 
-    setTarefa(tarefa);
-  }
-  
-  async function handleButtonPress(){ 
-    try {
-      const user = auth.currentUser;
-          if (!user) {
-            console.error('Nenhum usuário autenticado.');
-            return;
-          }
-      if (!editMode){
-      const docRef = await addDoc(collection(db, "tarefa"), {
-        tarefa: tarefa,
-        userId: user.uid,
-      });
-      setTarefa("");   
-      setEditMode(false); 
-    route.params.ButtonPress();   
-    navigation.navigate('Lista');
-      console.log("Document written with ID: ", docRef.id);
+import { db,updateDoc,doc } from './config';
+export default function AppEdit({ route,navigation })
+{
+    const [editedTask, setEditedTask] = useState(route.params.item);
+    const taskId = route.params.id;
+    function handleTarefaChange(editedTask) { 
+        setEditedTask(editedTask);
+      }
+      const handleEditPress = async () => {
+        try {
+       await updateDoc(doc(db,'tarefa',taskId) ,{
+            tarefa:editedTask
+           });
+           route.params.ButtonPress();
+        navigation.navigate("Lista");
+        console.log(editedTask);
+          } catch (error) {
+            console.error('Erro ao atualizar tarefa:', error);
+          }    
     }
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  }
-  return (
-    <View style={styles.container}>
+    return(
+<View style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems:'center',
     justifyContent: 'space-between', backgroundColor:'white',
     elevation:4,paddingHorizontal:20 ,width:'100%'}}>
-        <Text style={{fontSize:20,padding:20}}   >Cadastro</Text>
+        <Text style={{fontSize:20,padding:20}}   >Editar</Text>
         <Text style={{fontSize:20,padding:20,color:'red'}} onPress={()=>{navigation.goBack()}}>Cancelar</Text>
         </View>
       <Text style={styles.title}>Tarefa</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          value={tarefa}
+          value={editedTask}
           onChangeText={handleTarefaChange}
           placeholder="Tarefa"
            />
-        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+        <TouchableOpacity style={styles.button} onPress={handleEditPress}>
           <Text style={styles.buttonText}>Salvar</Text>
         </TouchableOpacity>
       </View>
@@ -113,3 +95,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   }
 });
+   

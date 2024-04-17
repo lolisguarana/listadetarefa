@@ -1,11 +1,12 @@
-import React from 'react';
+import React,{useState,useEffect} from  'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import Database from './Database';
 import { Edit, Trash } from 'react-native-feather';
-
+import { db,deleteDoc,doc,updateDoc} from './config';
 
 export default function AppItem(props) {
+    const taskId = props.id;
     function handleDeletePress() {
         Alert.alert(
             "Atenção",
@@ -18,17 +19,31 @@ export default function AppItem(props) {
                 },
                 {
                     text: "Sim", onPress: () => {
-                        Database.deleteItem(props.id)
-                            .then(response => props.navigation.navigate("AppList", { id: props.id }));
+                             apagarTarefa();
                     }
                 }
             ],
             { cancelable: false }
         );
     }
-    async function handleEditPress() {
-        const item = await Database.getItem(props.id);
-        props.navigation.navigate("AppForm", {item: item, edit: true});
+    const apagarTarefa = async () => {
+       try {
+            const tarefaId = props.id;
+            if (!tarefaId) {
+              console.warn('ID da pergunta não encontrado.');
+              return;
+            }
+            const tarefaRef = doc(db, 'tarefa', tarefaId);
+            await deleteDoc(tarefaRef);
+            // Recarregar as perguntas após a exclusão
+            props.ButtonPress();
+            props.navigation.navigate("Lista", { id: props.id});
+          } catch (error) {
+            console.error('Erro ao excluir pergunta:', error);
+          }
+    }
+    const handleEditPress = async () => {
+        props.navigation.navigate("Editar", {id:taskId,item:props.item,edit:true,ButtonPress:props.ButtonPress});  
     }
     return (
         <View style={styles.container}>
